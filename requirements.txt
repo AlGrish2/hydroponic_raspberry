@@ -11,3 +11,4 @@ Pillow
 tqdm
 matplotlib
 seaborn
+spidev>=3.0.1

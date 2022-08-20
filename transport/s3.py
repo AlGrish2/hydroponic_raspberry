@@ -13,16 +13,9 @@ def read_file_as_bytes(file_path: str):
     return file_bytes
 
 
-def download_file(url: str, save_path: str = 'tmp/'):
-    file_path = f"{save_path}{url.split('/')[-1]}"
-    r = requests.get(url, verify=False)
-    if r.ok:
-        with open(file_path, "wb") as file:
-            file.write(r.content)
-        return file_path
-    else:
-        raise("Couldnt download file")
-
+def _format_url(bucket_name: str, file_name: str) -> str:
+    file_link = f"https://{bucket_name}.s3.eu-central-1.amazonaws.com/{file_name}"
+    return file_link
 
 def upload_file(file_name, bucket, object_name=None):
     """Upload a file to an S3 bucket
@@ -48,7 +41,7 @@ def upload_file(file_name, bucket, object_name=None):
     except ClientError as e:
         logging.error(e)
         return False
-    return True
+    return _format_url(bucket, object_name)
 
 
 if __name__ == "__main__":

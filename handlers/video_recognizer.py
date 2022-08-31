@@ -2,7 +2,6 @@ import os
 from typing import List, Tuple
 from datetime import datetime
 
-import av
 import cv2
 import numpy as np
 from tqdm import trange
@@ -72,45 +71,33 @@ class VideoRecognizer:
         width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        fps = 10
+        fps = capture.get(cv2.CAP_PROP_FPS)
         
         if not os.path.exists('processed/'):
             os.makedirs('processed/')
-        output_path = f'processed/{os.path.basename(video_path)}'
+        output_path = f'processed/{os.path.basename(video_path)}.mp4'
+
+        fourcc = cv2.VideoWriter_fourcc(*'avc1')
+        writer = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
         all_recognitions = []
 
-        video_codec = "libx264"
-        options= None
+        while(capture.isOpened()):#for _ in trange(length, desc='Processing video...'):
+            ret, frame = capture.read()
+            if frame is None:
+                break
+            new_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            # cv2.imwrite(f'processed/frames/{_}.jpg', frame)
+            frame_recognitions = self.process_frame(new_frame)
+            new_frame = cv2.cvtColor(new_frame, cv2.COLOR_BGR2RGB)
+            
+            all_recognitions.append(frame_recognitions)
+            new_frame = self.draw_predictions(new_frame, frame_recognitions)
 
-        with av.open(output_path, mode="w") as container:
-            stream = container.add_stream(video_codec, rate=fps)
-            stream.width = width
-            stream.height = height
-            stream.pix_fmt = "yuv420p" if video_codec != "libx264rgb" else "rgb24"
-            stream.options = options or {}
+            writer.write(new_frame)
 
-            for _ in trange(length, desc='Processing video...'):
-                ret, frame = capture.read()
-                if frame is None:
-                    break
-                new_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                # cv2.imwrite(f'processed/frames/{_}.jpg', frame)
-                frame_recognitions = self.process_frame(new_frame)
-                
-                all_recognitions.append(frame_recognitions)
-                new_frame = self.draw_predictions(new_frame, frame_recognitions)
-
-                frame = av.VideoFrame.from_ndarray(new_frame, format="rgb24")
-                frame.pict_type = "NONE"
-                for packet in stream.encode(frame):
-                    container.mux(packet)
-
-            # Flush stream
-            for packet in stream.encode():
-                container.mux(packet)
-    
-            capture.release()
+        writer.release()
+        capture.release()
         return output_path, all_recognitions
 
     def upload_videos(self, raw_video_path, processed_video_path):

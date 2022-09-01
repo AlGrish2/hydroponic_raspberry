@@ -4,7 +4,6 @@ from datetime import datetime
 
 import cv2
 import numpy as np
-from tqdm import trange
 import requests
 
 from detector.base import DetectionMeta, Detector
@@ -47,7 +46,10 @@ class VideoRecognizer:
         for det, c_meta in zip(preds[0], preds[1]):
             # label = f"plant"
             frame = cv2.rectangle(frame, (det.x_min, det.y_min), (det.x_max, det.y_max), (0, 255, 0), 3)
-            # frame = cv2.putText(frame, label, (det.x_min, det.y_min), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 5)
+            frame = cv2.putText(frame, f'size: {det.size}', (det.x_min, det.y_min), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 5)
+        import config
+        frame = cv2.line(frame, (config.visibility_zone[0], 0), (config.visibility_zone[0], frame.shape[0]), (0, 255, 0), thickness=2)
+        frame = cv2.line(frame, (config.visibility_zone[1], 0), (config.visibility_zone[1], frame.shape[0]), (0, 255, 0), thickness=2)
         return frame
         
     def process_frame(self, frame: np.ndarray) -> Tuple[List[DetectionMeta], List[ClassificationMeta]]:
@@ -67,7 +69,6 @@ class VideoRecognizer:
 
     def process_video(self, video_path):
         capture = cv2.VideoCapture(video_path)
-        length = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
         width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
@@ -82,12 +83,11 @@ class VideoRecognizer:
 
         all_recognitions = []
 
-        while(capture.isOpened()):#for _ in trange(length, desc='Processing video...'):
+        while(capture.isOpened()):
             ret, frame = capture.read()
             if frame is None:
                 break
             new_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            # cv2.imwrite(f'processed/frames/{_}.jpg', frame)
             frame_recognitions = self.process_frame(new_frame)
             new_frame = cv2.cvtColor(new_frame, cv2.COLOR_BGR2RGB)
             
@@ -166,13 +166,13 @@ class VideoRecognizer:
             )
         return request_schema
 
-    def agregate_results(self, recognitions: Tuple[List[DetectionMeta], List[ClassificationMeta]]) -> AgregatedRecognitionsSchema:
+    def agregate_results(self, recognitions: List[Tuple[List[DetectionMeta], List[ClassificationMeta]]]) -> AgregatedRecognitionsSchema:
         """ 
         Business logic, process and agregate recognitions
         """
         # TODO Count values frome frame recognitions
         agregated_recs_schema = AgregatedRecognitionsSchema(
-            mean_size=0.5,
+            mean_size=np.mean([det.size for rec in recognitions for det in rec[0]]),
             healthy_plants=0.9,
             deffect_0=0.1,
             deffect_1=0.2,

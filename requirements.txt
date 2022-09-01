@@ -8,7 +8,7 @@ pandas
 requests
 pyyaml
 Pillow
-tqdm
 matplotlib
 seaborn
 spidev>=3.0.1
+python-dotenv==0.20.0

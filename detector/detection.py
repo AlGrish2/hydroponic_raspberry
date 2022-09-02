@@ -6,6 +6,8 @@ import numpy as np
 import cv2
 import torch
 
+import config
+
 
 class PlantsDetector(Detector):
 
@@ -14,30 +16,19 @@ class PlantsDetector(Detector):
 
     def predict(self, image: np.ndarray):
         predicts = self.detection_model(image).xyxy
+        
         return [
-        [
-            DetectionMeta(
-                x_min = int(box[0]),
-                y_min = int(box[1]),
-                x_max = int(box[2]),
-                y_max = int(box[3]),
-                crop = image[int(box[2]):int(box[3]), int(box[0]):int(box[1])]
-            )
-            for box in row if (box[4] > self.conf_thresh) and (int(box[0]) in self.visibility_zone) and (int(box[2]) in self.visibility_zone)
-        ]
-        for row in predicts
-    ][0]
-
-
-if __name__ == "__main__":
-    from config import detector_weights_path, confidence_treshold, iou_threshold, visibility_zone
-
-    pl_d = PlantsDetector(
-        model_path=detector_weights_path,
-        conf_thresh=confidence_treshold,
-        iou_thresh=iou_threshold,
-        visibility_zone=visibility_zone
-        )
-
-    result = pl_d.predict(cv2.imread('files/test_img.jpg'))
-    import pdb; pdb.set_trace()
+            [
+                DetectionMeta(
+                    x_min = int(box[0]),
+                    y_min = int(box[1]),
+                    x_max = int(box[2]),
+                    y_max = int(box[3]),
+                    size = int((box[2]- box[0]) * (box[3] - box[1]) * (box[1] / image.shape[0]) ** 2),
+                    crop = image[int(box[2]):int(box[3]), int(box[0]):int(box[1])]
+                )
+                for box in row 
+                if (box[4] > self.conf_thresh) and (int(box[0]) > config.visibility_zone[0]) and (int(box[2]) < config.visibility_zone[1])
+            ]
+            for row in predicts
+        ][0]

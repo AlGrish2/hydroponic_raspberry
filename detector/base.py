@@ -10,6 +10,7 @@ class DetectionMeta:
     y_min: int
     x_max: int
     y_max: int
+    size: int
     crop: np.ndarray
 
 class Detector:
@@ -17,15 +18,13 @@ class Detector:
         self, 
         model_path: str, 
         conf_thresh: float, 
-        iou_thresh: float, 
-        visibility_zone: tuple,
+        iou_thresh: float,
         ):
 
         self.model_path = model_path
         self.conf_thresh = conf_thresh
         self.iou_thresh = iou_thresh
         self.detection_model = self._load_model()
-        self.visibility_zone = [i for i in range(visibility_zone[0], visibility_zone[1]+1)]
 
     def _load_model(self):
         pass

@@ -111,7 +111,7 @@ class VideoRecognizer:
             from hardware_interface.raspberry_code.raspberrysensors import DataCollection
             collector = DataCollection()
             print('Сonnection to sensors')
-            sensor_info = collector.get_sensor_info()
+            sensor_info = collector.get_sensor_data()
             min_wl: int = sensor_info['min_wl']
             max_wl: int = sensor_info['max_wl']
             air_temp: float = sensor_info['air_temp']

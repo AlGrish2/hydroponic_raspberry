@@ -9,11 +9,15 @@ from config import (
     video_duration,
     tower_id, backend_endpoint, 
     videos_bucket, processed_videos_bucket,
-    detector_weights_path, confidence_treshold, iou_threshold, visibility_zone
+    detector_weights_path, 
+    detector_confidence_treshold,
+    iou_threshold, 
+    classifier_weights_path,
+    classifier_confidence_treshold
 )
 
 from detector.detection import PlantsDetector
-from classifier.base import DummyClassifier
+from classifier.base import PytorchClassifier
 
 from handlers.video_maker import DummyVideoMaker
 from handlers.video_recognizer import VideoRecognizer
@@ -29,15 +33,18 @@ def check_environment():
 video_maker_service = DummyVideoMaker(
     '/home/inna/PythonProjects/hydroponic-project/hydroponic_raspberry/files', 
     video_duration
-    )
+)
 
 detector = PlantsDetector(
     model_path=detector_weights_path,
-    conf_thresh=confidence_treshold,
+    conf_thresh=detector_confidence_treshold,
     iou_thresh=iou_threshold,
 )
 
-deffect_classifier = DummyClassifier('./', 0.5)
+deffect_classifier = PytorchClassifier(
+    model_path=classifier_weights_path,
+    conf_thresh=classifier_confidence_treshold,
+)
 
 video_recognizer_service = VideoRecognizer(
     tower_id=tower_id,

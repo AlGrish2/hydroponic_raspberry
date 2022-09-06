@@ -25,10 +25,16 @@ class PlantsDetector(Detector):
                     x_max = int(box[2]),
                     y_max = int(box[3]),
                     size = int((box[2]- box[0]) * (box[3] - box[1]) * (box[1] / image.shape[0]) ** 2),
-                    crop = image[int(box[2]):int(box[3]), int(box[0]):int(box[1])]
+                    crop = image[int(box[1]):int(box[3]), int(box[0]):int(box[2])]
                 )
                 for box in row 
-                if (box[4] > self.conf_thresh) and (int(box[0]) > config.visibility_zone[0]) and (int(box[2]) < config.visibility_zone[1])
+                if (
+                    (box[4] > self.conf_thresh) 
+                    and (int(box[0]) > config.visibility_zone[0]) 
+                    and (int(box[2]) < config.visibility_zone[1])
+                    and (box[2] - box[0]) > 5
+                    and (box[3] - box[1]) > 5
+                )
             ]
             for row in predicts
         ][0]

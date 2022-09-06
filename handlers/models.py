@@ -4,24 +4,32 @@ from pydantic import BaseModel, AnyUrl
 
 class AgregatedRecognitionsSchema(BaseModel):
     mean_size: float
-    healthy_plants: float
-    deffect_0: float
-    deffect_1: float
-    deffect_2: float
+    nutrient_surplus: float
+    magnesium: float
+    phosphate: float
+    healthy: float
+    phosphorous: float
+    nitrates: float
+    potassium: float
+    nitrogen: float
+    calcium: float
+    sulfur: float
 
 
 class SensorsSchema(BaseModel):
-    sensor_0_light_level: float
-    sensor_1_light_level: float
-    air_temp: float
-    relative_humidity: float
-    pressure: float
-    water_temp: float
-    water_ph: float
-    water_ec: float
-    water_ppm: float
-    water_level_up: bool
-    water_level_down: bool
+    min_wl: int = 0
+    max_wl: int = 1
+    air_temp: float = 0.5
+    hum: float = 0.5
+    pres: float = 0.5
+    water_temp: float = 0.5
+    light1: float = 0.5
+    light2: float = 0.5
+    light3: float = 0.5
+    light4: float = 0.5
+    ph: float = 0.5
+    ec: float = 0.5
+    tds: float = 0.5
 
 
 class RequestSchema(BaseModel):
@@ -31,19 +39,27 @@ class RequestSchema(BaseModel):
     processed_video_url: AnyUrl = None
     
     mean_size: float = None
-    healthy_plants: float = None
-    deffect_0: float = None
-    deffect_1: float = None
-    deffect_2: float = None
+    nutrient_surplus: float
+    magnesium: float
+    phosphate: float
+    healthy: float
+    phosphorous: float
+    nitrates: float
+    potassium: float
+    nitrogen: float
+    calcium: float
+    sulfur: float
 
-    sensor_0_light_level: float = None
-    sensor_1_light_level: float = None
-    air_temp: float = None
-    relative_humidity: float = None
-    pressure: float = None
-    water_temp: float = None
-    water_ph: float = None
-    water_ec: float = None
-    water_ppm: float = None
-    water_level_up: bool = None
-    water_level_down: bool = None
+    min_wl: int = 0
+    max_wl: int = 1
+    air_temp: float = 0.5
+    hum: float = 0.5
+    pres: float = 0.5
+    water_temp: float = 0.5
+    light1: float = 0.5
+    light2: float = 0.5
+    light3: float = 0.5
+    light4: float = 0.5
+    ph: float = 0.5
+    ec: float = 0.5
+    tds: float = 0.5

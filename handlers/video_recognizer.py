@@ -83,7 +83,7 @@ class VideoRecognizer:
 
         all_recognitions = []
 
-        while(capture.isOpened()):
+        while capture.isOpened():
             ret, frame = capture.read()
             if frame is None:
                 break
@@ -106,31 +106,55 @@ class VideoRecognizer:
         return raw_video_s3_link, processed_video_s3_link
 
     def get_sensor_info(self) -> SensorsSchema:
-        sensor_0_light_level: float = 0.5
-        sensor_1_light_level: float = 0.5
-        air_temp: float = 0.5
-        relative_humidity: float = 0.5
-        pressure: float = 0.5
-        water_temp: float = 0.5
-        water_ph: float = 0.5
-        water_ec: float = 0.5
-        water_ppm: float = 0.5
-        water_level_up: bool = False
-        water_level_down: bool = True
+
+        try:
+            from hardware_interface.raspberry_code.raspberrysensors import DataCollection
+            collector = DataCollection()
+            print('Сonnection to sensors')
+            sensor_info = collector.get_sensor_info()
+            min_wl: int = sensor_info['min_wl']
+            max_wl: int = sensor_info['max_wl']
+            air_temp: float = sensor_info['air_temp']
+            hum: float = sensor_info['hum']
+            pres: float = sensor_info['pres']
+            water_temp: float = sensor_info['water_temp']
+            light1: float = sensor_info['light1']
+            light2: float = sensor_info['light2']
+            light3: float = sensor_info['light3']
+            light4: float = sensor_info['light4']
+            ph: float = sensor_info['ph']
+            ec: float = sensor_info['ec']
+            tds: float = sensor_info['tds']
+        except Exception:
+            min_wl: int = 0
+            max_wl: int = 1
+            air_temp: float = 0.5
+            hum: float = 0.5
+            pres: float = 0.5
+            water_temp: float = 0.5
+            light1: float = 0.5
+            light2: float = 0.5
+            light3: float = 0.5
+            light4: float = 0.5
+            ph: float = 0.5
+            ec: float = 0.5
+            tds: float = 0.5
 
         sensors_schema = SensorsSchema(
-            sensor_0_light_level=sensor_0_light_level, 
-            sensor_1_light_level=sensor_1_light_level, 
-            air_temp=air_temp, 
-            relative_humidity=relative_humidity,
-            pressure=pressure,
-            water_temp=water_temp,
-            water_ph=water_ph,
-            water_ec=water_ec,
-            water_ppm=water_ppm,
-            water_level_up=water_level_up,
-            water_level_down=water_level_down
-            )
+            min_wl = min_wl,
+            max_wl = max_wl,
+            air_temp = air_temp,
+            hum = hum,
+            pres = pres,
+            water_temp = water_temp,
+            light1 = light1,
+            light2 = light2,
+            light3 = light3,
+            light4 = light4,
+            ph = ph,
+            ec = ec,
+            tds = tds
+        )
         return sensors_schema
 
     def serialize(
@@ -148,22 +172,30 @@ class VideoRecognizer:
             raw_video_url=raw_video_url,
             processed_video_url=processed_video_url,
             mean_size=agregated_info.mean_size,
-            healthy_plants=agregated_info.healthy_plants,
-            deffect_0=agregated_info.deffect_0,
-            deffect_1=agregated_info.deffect_1,
-            deffect_2=agregated_info.deffect_2,
-            sensor_0_light_level=sensor_info.sensor_0_light_level,
-            sensor_1_light_level=sensor_info.sensor_1_light_level,
-            air_temp=sensor_info.air_temp,
-            relative_humidity=sensor_info.relative_humidity,
-            pressure=sensor_info.pressure,
-            water_temp=sensor_info.water_temp,
-            water_ph=sensor_info.water_ph,
-            water_ec=sensor_info.water_ec,
-            water_ppm=sensor_info.water_ppm,
-            water_level_up=sensor_info.water_level_up,
-            water_level_down=sensor_info.water_level_down,
-            )
+            nutrient_surplus=agregated_info.nutrient_surplus,
+            magnesium=agregated_info.magnesium,
+            phosphate=agregated_info.phosphate,
+            healthy=agregated_info.healthy,
+            phosphorous=agregated_info.phosphorous,
+            nitrates=agregated_info.nitrates,
+            potassium=agregated_info.potassium,
+            nitrogen=agregated_info.nitrogen,
+            calcium=agregated_info.calcium,
+            sulfur=agregated_info.sulfur,
+            min_wl = sensor_info.min_wl,
+            max_wl = sensor_info.max_wl,
+            air_temp = sensor_info.air_temp,
+            hum = sensor_info.hum,
+            pres = sensor_info.pres,
+            water_temp = sensor_info.water_temp,
+            light1 = sensor_info.light1,
+            light2 = sensor_info.light2,
+            light3 = sensor_info.light3,
+            light4 = sensor_info.light4,
+            ph = sensor_info.ph,
+            ec = sensor_info.ec,
+            tds = sensor_info.tds
+        )
         return request_schema
 
     def agregate_results(self, recognitions: List[Tuple[List[DetectionMeta], List[ClassificationMeta]]]) -> AgregatedRecognitionsSchema:
@@ -173,10 +205,16 @@ class VideoRecognizer:
         # TODO Count values frome frame recognitions
         agregated_recs_schema = AgregatedRecognitionsSchema(
             mean_size=np.mean([det.size for rec in recognitions for det in rec[0]]),
-            healthy_plants=0.9,
-            deffect_0=0.1,
-            deffect_1=0.2,
-            deffect_2=0.3
+            nutrient_surplus=np.mean([clf.nutrient_surplus for rec in recognitions for clf in rec[1]]),
+            magnesium=np.mean([clf.magnesium for rec in recognitions for clf in rec[1]]),
+            phosphate=np.mean([clf.phosphate for rec in recognitions for clf in rec[1]]),
+            healthy=np.mean([clf.healthy for rec in recognitions for clf in rec[1]]),
+            phosphorous=np.mean([clf.phosphorous for rec in recognitions for clf in rec[1]]),
+            nitrates=np.mean([clf.nitrates for rec in recognitions for clf in rec[1]]),
+            potassium=np.mean([clf.potassium for rec in recognitions for clf in rec[1]]),
+            nitrogen=np.mean([clf.nitrogen for rec in recognitions for clf in rec[1]]),
+            calcium=np.mean([clf.calcium for rec in recognitions for clf in rec[1]]),
+            sulfur=np.mean([clf.sulfur for rec in recognitions for clf in rec[1]])
         )
         return agregated_recs_schema
 
@@ -204,7 +242,7 @@ class VideoRecognizer:
             processed_video_url,
             agregated_results,
             sensor_info
-            )
+        )
 
         self.upload_result(request_schema)
         self.clear(video_path, processed_video_path)

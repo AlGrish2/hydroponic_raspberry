@@ -131,3 +131,4 @@ dmypy.json
 # dirs
 /files
 /processed
+.vscode/settings.json

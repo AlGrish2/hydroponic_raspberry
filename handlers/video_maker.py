@@ -12,12 +12,11 @@ class VideoMaker:
             str: absolute path/to/record
         """
         video_path = f'{datetime.now()}.mp4'.replace(' ', '_')
-        capture = cv2.VideoCapture(0)
-        width = 1280 #int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = 960 #int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        
+        width = 1920 #int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = 1080 #int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
         fps = 1 #capture.get(cv2.CAP_PROP_FPS)
-        capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-        capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         writer = cv2.VideoWriter(video_path, fourcc, fps, (height, width))
 
@@ -28,10 +27,14 @@ class VideoMaker:
             stepstomove = str(stepstomove)
             stepstomoveencode = stepstomove.encode()
             serial1.write(stepstomoveencode)
-            time.sleep(2)
+            time.sleep(3)
+            capture = cv2.VideoCapture(0)
+            capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+            capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
             ret, frame = capture.read()
             frame = cv2.rotate(frame, rotateCode=2)
             writer.write(frame)
+            capture.release()
         
         stepstomove = 2
         stepstomove = str(stepstomove)
@@ -46,7 +49,7 @@ class VideoMaker:
         serial1.write(stepstomoveencode)
 
         writer.release()
-        capture.release()
+        
         return video_path
 
 

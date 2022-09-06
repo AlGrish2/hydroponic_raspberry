@@ -16,7 +16,7 @@ class PlantsDetector(Detector):
 
     def predict(self, image: np.ndarray):
         predicts = self.detection_model(image).xyxy
-        
+        print(predicts)
         return [
             [
                 DetectionMeta(

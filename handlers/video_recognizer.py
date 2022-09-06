@@ -1,3 +1,4 @@
+from torchvision.io import write_video
 import os
 from typing import List, Tuple
 from datetime import datetime
@@ -78,10 +79,8 @@ class VideoRecognizer:
             os.makedirs('processed/')
         output_path = f'processed/{os.path.basename(video_path)}.mp4'
 
-        fourcc = cv2.VideoWriter_fourcc(*'avc1')
-        writer = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
-
         all_recognitions = []
+        all_frames = []
 
         while capture.isOpened():
             ret, frame = capture.read()
@@ -89,14 +88,12 @@ class VideoRecognizer:
                 break
             new_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             frame_recognitions = self.process_frame(new_frame)
-            new_frame = cv2.cvtColor(new_frame, cv2.COLOR_BGR2RGB)
             
             all_recognitions.append(frame_recognitions)
             new_frame = self.draw_predictions(new_frame, frame_recognitions)
+            all_frames.append(new_frame)
 
-            writer.write(new_frame)
-
-        writer.release()
+        write_video(output_path, all_frames, fps)
         capture.release()
         return output_path, all_recognitions
 

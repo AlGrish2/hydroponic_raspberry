@@ -20,3 +20,4 @@ w1thermsensor
 pydantic
 boto3
 tqdm
+av

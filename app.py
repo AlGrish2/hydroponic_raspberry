@@ -19,7 +19,7 @@ from config import (
 from detector.detection import PlantsDetector
 from classifier.base import PytorchClassifier
 
-from handlers.video_maker import DummyVideoMaker
+from handlers.video_maker import VideoMaker
 from handlers.video_recognizer import VideoRecognizer
 
 
@@ -30,10 +30,7 @@ def check_environment():
     os.environ['PROCESSED_VIDEOS_BUCKET']
 
 
-video_maker_service = DummyVideoMaker(
-    '/home/inna/PythonProjects/hydroponic-project/hydroponic_raspberry/files', 
-    video_duration
-)
+video_maker_service = VideoMaker()
 
 detector = PlantsDetector(
     model_path=detector_weights_path,

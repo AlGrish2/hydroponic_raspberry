@@ -1,21 +1,53 @@
+from datetime import now
+import time
+import serial
+import cv2
+
+
 class VideoMaker:
-    def __init__(self, save_path: str, duration: int):
-        """ Service for init videowriting process
-
-        Args:
-            save_path (str): absolute
-            duration (int): duration in seconds
-        """
-        self.save_path = save_path
-        self.duration = duration
-
     def record(self) -> str:
         """ create and save the record
 
         Returns:
             str: absolute path/to/record
         """
-        pass
+        video_path = f'{now()}.mp4'
+        capture = cv2.VideoCapture(0)
+        width = 1280 #int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = 960 #int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps = 1 #capture.get(cv2.CAP_PROP_FPS)
+        capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        capture.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        writer = cv2.VideoWriter(video_path, fourcc, fps, (height, width))
+
+        serial1 = serial.Serial('/dev/ttyACM0', 9600)
+        serial1.flush()
+        for i in range(8):
+            stepstomove = 1
+            stepstomove = str(stepstomove)
+            stepstomoveencode = stepstomove.encode()
+            serial1.write(stepstomoveencode)
+            time.sleep(2)
+            ret, frame = capture.read()
+            frame = cv2.rotate(frame, rotateCode=2)
+            writer.write(frame)
+        
+        stepstomove = 2
+        stepstomove = str(stepstomove)
+        stepstomoveencode = stepstomove.encode()
+        for i in range(8):
+            serial1.write(stepstomoveencode)
+            time.sleep(2)
+
+        stepstomove = 0
+        stepstomove = str(stepstomove)
+        stepstomoveencode = stepstomove.encode()
+        serial1.write(stepstomoveencode)
+
+        writer.release()
+        capture.release()
+        return video_path
 
 
 class DummyVideoMaker(VideoMaker):

@@ -12,3 +12,9 @@ matplotlib
 seaborn
 spidev>=3.0.1
 python-dotenv==0.20.0
+pyiArduinoI2Ctds
+pyiArduinoI2Cdsl 
+pyiArduinoI2Cph
+RPi.bme280
+smbus2
+w1thermsensor

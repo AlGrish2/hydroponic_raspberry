@@ -41,13 +41,13 @@ class DataCollection:
         self.sensor_info[self.sensor_keys[0]] = int(adc.read_adc(0, gain=self.GAIN) > self.adc_cutoff)
         self.sensor_info[self.sensor_keys[0]] = int(adc.read_adc(1, gain=self.GAIN) > self.adc_cutoff)
 
-        self.sensor_info['water_temp'] = water_sensor.get_temperature()                            #getting water temperature sensor value
+        self.sensor_info['water_temp'] = water_sensor.get_temperature()                    
         
         while True:
             try:
                 atm_bus = smbus2.SMBus(self.atm_port)
                 time.sleep(1)
-                atmospheric_data = bme280.sample(atm_bus, self.atm_address)        #getting atmospheric sensor data
+                atmospheric_data = bme280.sample(atm_bus, self.atm_address)
                 self.sensor_info['air_temp'] = atmospheric_data.temperature
                 self.sensor_info['hum'] = atmospheric_data.humidity
                 self.sensor_info['pres'] = atmospheric_data.pressure*100
@@ -56,10 +56,10 @@ class DataCollection:
                 continue
         
 
-        self.sensor_info['ph'] = ph_sensor.getPH()                                                  #getting pH sensor value
-        tds_sensor.set_t(self.sensor_info['water_temp'])                                                   #provides temperature of solution to the tds sensor
-        self.sensor_info['ec'] = tds_sensor.getEC()                                                        #getting electrical conductivity value
-        self.sensor_info['tds'] = tds_sensor.getTDS()                                                            #turning tds sensor back off
+        self.sensor_info['ph'] = ph_sensor.getPH()
+        tds_sensor.set_t(self.sensor_info['water_temp'])
+        self.sensor_info['ec'] = tds_sensor.getEC() 
+        self.sensor_info['tds'] = tds_sensor.getTDS() 
 
         
 

@@ -10,6 +10,11 @@
 - VIDEOS_BUCKET - bucket name with raw videos created by VideoMaker
 - PROCESSED_VIDEOS_BUCKET - bucket name with videos processed by the VideoRecognizer
 
+3. Installing libraries
+
+```pip install -r requirements.txt```
+```pip install git+https://github.com/adafruit/Adafruit_Python_ADS1x15.git```
+
 
 # How to run
 

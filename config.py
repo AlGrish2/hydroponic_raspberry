@@ -2,7 +2,7 @@ import os
 
 
 tower_id = 1
-backend_endpoint = 'http://localhost:8050/post_record'
+backend_endpoint = 'http://192.168.0.247:8050/post_record'
 
 video_duration = 60
 

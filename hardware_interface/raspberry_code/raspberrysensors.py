@@ -1,6 +1,6 @@
 import time
 
-from w1thermsensor import W1ThermSensor #water temperature sensor library
+# from w1thermsensor import W1ThermSensor #water temperature sensor library
 import Adafruit_ADS1x15  # Water level sensor library
 import bme280  # atmospheric conditions sensor library
 import smbus2  # general I2C library
@@ -30,7 +30,7 @@ class DataCollection:
         dsl1 = pyiArduinoI2Cdsl(0x31)
         dsl2 = pyiArduinoI2Cdsl(0x32)
         dsl3 = pyiArduinoI2Cdsl(0x33)
-        water_sensor = W1ThermSensor()                                           
+        # water_sensor = W1ThermSensor()                                           
         time.sleep(2)
 
         self.sensor_info['light1'] = dsl0.getLux()
@@ -39,9 +39,9 @@ class DataCollection:
         self.sensor_info['light4'] = dsl3.getLux()
         
         self.sensor_info[self.sensor_keys[0]] = int(adc.read_adc(0, gain=self.GAIN) > self.adc_cutoff)
-        self.sensor_info[self.sensor_keys[0]] = int(adc.read_adc(1, gain=self.GAIN) > self.adc_cutoff)
+        self.sensor_info[self.sensor_keys[1]] = int(adc.read_adc(1, gain=self.GAIN) > self.adc_cutoff)
 
-        self.sensor_info['water_temp'] = water_sensor.get_temperature()                    
+        self.sensor_info['water_temp'] = 22.5#water_sensor.get_temperature()                    
         
         while True:
             try:
@@ -67,3 +67,6 @@ class DataCollection:
 
 
     
+if __name__ == '__main__':
+    collector = DataCollection()
+    print(collector.get_sensor_data())

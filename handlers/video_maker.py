@@ -1,4 +1,4 @@
-from datetime import now
+from datetime import datetime
 import time
 import serial
 import cv2
@@ -11,7 +11,7 @@ class VideoMaker:
         Returns:
             str: absolute path/to/record
         """
-        video_path = f'{now()}.mp4'
+        video_path = f'{datetime.now()}.mp4'.replace(' ', '_')
         capture = cv2.VideoCapture(0)
         width = 1280 #int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = 960 #int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))

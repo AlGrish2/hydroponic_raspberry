@@ -2,7 +2,7 @@ import os
 
 
 tower_id = 1
-backend_endpoint = 'http://192.168.0.247:8050/post_record'
+backend_endpoint = 'http://3.71.48.28:8050/post_record'
 
 video_duration = 60
 
@@ -10,7 +10,7 @@ video_duration = 60
 detector_weights_path = './detector/best.pt'
 detector_confidence_treshold = 0.5
 iou_threshold = 0.5
-visibility_zone = (0, 900) # x_start, x_end to crop only center
+visibility_zone = (0, 1080) # x_start, x_end to crop only center
 
 classifier_weights_path = './classifier/jit_model.pt'
 classifier_confidence_treshold = 0.5

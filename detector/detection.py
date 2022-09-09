@@ -16,7 +16,6 @@ class PlantsDetector(Detector):
 
     def predict(self, image: np.ndarray):
         predicts = self.detection_model(image).xyxy
-        print(predicts)
         return [
             [
                 DetectionMeta(
@@ -24,7 +23,7 @@ class PlantsDetector(Detector):
                     y_min = int(box[1]),
                     x_max = int(box[2]),
                     y_max = int(box[3]),
-                    size = int((box[2]- box[0]) * (box[3] - box[1]) * (box[1] / image.shape[0]) ** 2),
+                    size = round(float((box[2]- box[0]) * (box[3] - box[1]) / image.shape[0] / image.shape[1]), 3),
                     crop = image[int(box[1]):int(box[3]), int(box[0]):int(box[2])]
                 )
                 for box in row 

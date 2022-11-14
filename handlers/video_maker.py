@@ -20,13 +20,13 @@ class VideoMaker:
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         writer = cv2.VideoWriter(video_path, fourcc, fps, (height, width))
 
-        serial1 = serial.Serial('/dev/ttyACM0', 9600)
-        serial1.flush()
+        # serial1 = serial.Serial('/dev/ttyACM0', 9600)
+        # serial1.flush()
         for i in range(8):
             stepstomove = 1
             stepstomove = str(stepstomove)
             stepstomoveencode = stepstomove.encode()
-            serial1.write(stepstomoveencode)
+            # serial1.write(stepstomoveencode)
             time.sleep(3)
             capture = cv2.VideoCapture(0)
             capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)

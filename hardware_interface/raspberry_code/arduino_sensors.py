@@ -12,7 +12,7 @@ class DataCollection:
         self.atm_port = 1
         self.atm_address = 0x76
         self.sensor_info = {}
-        self.sensor_keys = ['wl_upper', 'wl_lower', 'air_temp', 'hum', 'pres', 'water_temp', 'light1', 'ph', 'ec', 'tds']
+        self.sensor_keys = ['min_wl', 'max_wl','air_temp', 'hum', 'pres', 'water_temp', 'light1', 'light2', 'light3', 'light4', 'ph', 'ec', 'tds']
 
     def get_sensor_data (self):
         tds_sensor = pyiArduinoI2Ctds(0x29)
@@ -24,9 +24,9 @@ class DataCollection:
         time.sleep(2)
 
         self.sensor_info['light1'] = dsl0.getLux()
-        self.sensor_info['light2'] = -1
-        self.sensor_info['light3'] = -1
-        self.sensor_info['light4'] = -1
+        self.sensor_info['light2'] = -1.0
+        self.sensor_info['light3'] = -1.0
+        self.sensor_info['light4'] = -1.0
         self.sensor_info[self.sensor_keys[0]] = -1
         
         ser = serial.Serial('/dev/ttyACM1', 9600, timeout=1)
@@ -44,7 +44,7 @@ class DataCollection:
             ser.write(waterlevelencode)
             time.sleep(1)
             if ser.in_waiting > 0:
-                self.sensor_info[self.sensor_keys[1]] = ser.readline().decode('utf-8').rstrip()
+                self.sensor_info[self.sensor_keys[1]] = int(ser.readline().decode('utf-8').rstrip())
                 break
         
         while True:

@@ -13,7 +13,6 @@
 3. Installing libraries
 
 ```pip install -r requirements.txt```
-```pip install git+https://github.com/adafruit/Adafruit_Python_ADS1x15.git```
 
 
 # How to run
@@ -21,3 +20,8 @@
 ```python3 app.py run-app```
 
 ```python app.py run-video --video_path=test.mp4```
+
+# Scheduling
+1. ```crontab -e```
+2. insert the following line, change the word interval  to intended interval between runs
+- */interval * * * * cd /home/algrish/hydroponic_raspberry && python3 app.py run-app >> /home/algrish/hydroponic_raspberry/log.txt 2>&1

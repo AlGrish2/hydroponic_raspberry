@@ -36,17 +36,17 @@ class VideoMaker:
             writer.write(frame)
             capture.release()
         
-        stepstomove = 2
-        stepstomove = str(stepstomove)
-        stepstomoveencode = stepstomove.encode()
-        for i in range(8):
-            serial1.write(stepstomoveencode)
-            time.sleep(2)
+        # stepstomove = 2
+        # stepstomove = str(stepstomove)
+        # stepstomoveencode = stepstomove.encode()
+        # for i in range(8):
+        #     serial1.write(stepstomoveencode)
+        #     time.sleep(2)
 
-        stepstomove = 0
-        stepstomove = str(stepstomove)
-        stepstomoveencode = stepstomove.encode()
-        serial1.write(stepstomoveencode)
+        # stepstomove = 0
+        # stepstomove = str(stepstomove)
+        # stepstomoveencode = stepstomove.encode()
+        # serial1.write(stepstomoveencode)
 
         writer.release()
         

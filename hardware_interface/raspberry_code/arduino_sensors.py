@@ -1,6 +1,6 @@
 import time
 import serial
-import Adafruit_ADS1x15  # Water level sensor library
+# import Adafruit_ADS1x15  # Water level sensor library
 import bme280  # atmospheric conditions sensor library
 import smbus2  # general I2C library
 from pyiArduinoI2Cdsl import * #Light sensor library
@@ -29,7 +29,10 @@ class DataCollection:
         self.sensor_info['light4'] = -1.0
         self.sensor_info[self.sensor_keys[0]] = -1
         
-        ser = serial.Serial('/dev/ttyACM1', 9600, timeout=1)
+        try:
+            ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+        except Exception:
+            ser = serial.Serial('/dev/ttyACM1', 9600, timeout=1)
         ser.reset_input_buffer()
         watertempencode = watertemp.encode()
         while 1:

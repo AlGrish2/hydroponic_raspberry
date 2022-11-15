@@ -105,7 +105,7 @@ class VideoRecognizer:
     def get_sensor_info(self) -> SensorsSchema:
 
         try:
-            from hardware_interface.raspberry_code.raspberrysensors import DataCollection
+            from hardware_interface.raspberry_code.arduino_sensors import DataCollection
             collector = DataCollection()
             print('Сonnection to sensors')
             sensor_info = collector.get_sensor_data()
@@ -122,7 +122,7 @@ class VideoRecognizer:
             ph: float = sensor_info['ph']
             ec: float = sensor_info['ec']
             tds: float = sensor_info['tds']
-        except Exception:
+        except Exception as x:
             min_wl: int = 0
             max_wl: int = 1
             air_temp: float = 0.5
@@ -136,6 +136,7 @@ class VideoRecognizer:
             ph: float = 0.5
             ec: float = 0.5
             tds: float = 0.5
+            print(x)
 
         sensors_schema = SensorsSchema(
             min_wl = min_wl,

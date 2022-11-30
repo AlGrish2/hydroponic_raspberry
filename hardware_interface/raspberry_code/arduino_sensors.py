@@ -16,7 +16,7 @@ class DataCollection:
 
     def get_sensor_data (self):
         tds_sensor = pyiArduinoI2Ctds(0x29)
-        ph_sensor = pyiArduinoI2Cph(0x19)
+        ph_sensor = pyiArduinoI2Cph(0x09)
         dsl0 = pyiArduinoI2Cdsl(0x30)
         watertemp = str(1)
         waterlevel = str(2)

@@ -8,9 +8,9 @@ video_duration = 60
 
 # models config
 detector_weights_path = './detector/best.pt'
-detector_confidence_treshold = 0.5
-iou_threshold = 0.5
-visibility_zone = (0, 1080) # x_start, x_end to crop only center
+detector_confidence_treshold = 0.1
+iou_threshold = 0.25
+visibility_zone = (0, 1920) # x_start, x_end to crop only center
 
 classifier_weights_path = './classifier/jit_model.pt'
 classifier_confidence_treshold = 0.5

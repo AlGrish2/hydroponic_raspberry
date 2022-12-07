@@ -21,3 +21,4 @@ pydantic
 boto3
 tqdm
 av
+serial

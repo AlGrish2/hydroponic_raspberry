@@ -21,6 +21,7 @@ from classifier.base import PytorchClassifier
 
 from handlers.video_maker import VideoMaker
 from handlers.video_recognizer import VideoRecognizer
+from handlers.sensor_module import SensorModule
 
 
 def check_environment():
@@ -30,41 +31,68 @@ def check_environment():
     os.environ['PROCESSED_VIDEOS_BUCKET']
 
 
-video_maker_service = VideoMaker()
-
-detector = PlantsDetector(
-    model_path=detector_weights_path,
-    conf_thresh=detector_confidence_treshold,
-    iou_thresh=iou_threshold,
-)
-
-deffect_classifier = PytorchClassifier(
-    model_path=classifier_weights_path,
-    conf_thresh=classifier_confidence_treshold,
-)
-
-video_recognizer_service = VideoRecognizer(
-    tower_id=tower_id,
-    endpoint=backend_endpoint,
-    raw_videos_bucket=videos_bucket,
-    processed_videos_bucket=processed_videos_bucket,
-    detector=detector,
-    classifier=deffect_classifier
-    )
-
 @click.group()
 def cli():
     pass
 
 @cli.command()
 def run_app():
+    video_maker_service = VideoMaker()
+
+    detector = PlantsDetector(
+        model_path=detector_weights_path,
+        conf_thresh=detector_confidence_treshold,
+        iou_thresh=iou_threshold,
+    )
+
+    deffect_classifier = PytorchClassifier(
+        model_path=classifier_weights_path,
+        conf_thresh=classifier_confidence_treshold,
+    )
+
+    video_recognizer_service = VideoRecognizer(
+        tower_id=tower_id,
+        endpoint=backend_endpoint,
+        raw_videos_bucket=videos_bucket,
+        processed_videos_bucket=processed_videos_bucket,
+        detector=detector,
+        classifier=deffect_classifier
+    )
     video_path = video_maker_service.record()
     video_recognizer_service.handle(video_path)
 
 
 @cli.command()
+def run_sensor_module():
+    sensor_module = SensorModule(
+        tower_id=tower_id,
+        endpoint=backend_endpoint
+    )
+    sensor_module.handle()
+
+@cli.command()
 @click.option('--video_path')
 def run_video(video_path):
+
+    detector = PlantsDetector(
+        model_path=detector_weights_path,
+        conf_thresh=detector_confidence_treshold,
+        iou_thresh=iou_threshold,
+    )
+
+    deffect_classifier = PytorchClassifier(
+        model_path=classifier_weights_path,
+        conf_thresh=classifier_confidence_treshold,
+    )
+
+    video_recognizer_service = VideoRecognizer(
+        tower_id=tower_id,
+        endpoint=backend_endpoint,
+        raw_videos_bucket=videos_bucket,
+        processed_videos_bucket=processed_videos_bucket,
+        detector=detector,
+        classifier=deffect_classifier
+    )
     video_recognizer_service.handle(video_path)
 
 
